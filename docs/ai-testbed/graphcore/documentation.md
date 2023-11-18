@@ -12,6 +12,10 @@
 [Common memory optimisations](https://docs.graphcore.ai/projects/memory-performance-optimisation/en/latest/common-memory-optimisations.html)<br>
 Of the memory optimizations:<br>
 
+* Reducing batch size will usually reduce memory usage. Performance may suffer for I/O-intensive jobs.
+Effective batch size is batch_size * replicationFactor * deviceIterations * gradientAccumentation <br>
+deviceIterations and gradientAccumulation each default to 1. 
+
 * Using FP16 for the partials will often be helpful (accuracy may suffer)<br>
 E.g., for a PyTorch model,
 ```python

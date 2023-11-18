@@ -2,25 +2,27 @@
 
 ## Introduction
 
-ALCF's Graphcore POD64 system uses Slurm for job submission and queueing. Below are some of the important commands for using Slurm. For more information refer to [Slurm Documentation](https://slurm.schedmd.com/).
+ALCF's Graphcore POD64 system uses PBS for job submission and queueing. Below are some of the important commands for using PBS. For more information see the User’s Guide (UG) section of the [BS Big Book](https://2021.help.altair.com/2021.1/PBSProfessional/PBS2021.1.pdf)
 
->**NOTE: Jobs that require IPUs will fail unless launched with `srun` or `sbatch`.**
->**NOTE: There is a single Slurm scheduler for the Graphcore POD64.**
 
-## SRun
+>**NOTE: Jobs that require IPUs will fail unless launched with `qsub`.**
+>**NOTE: There is a single PBS scheduler for the Graphcore POD64.**
 
-The Slurm command `srun` can be used to run individual Python scripts (or other programs) in parallel with other scripts on a cluster managed by Slurm. An example of `srun` usage is shown below. Use the `--ipus=` option to specify the number of IPUs required for the run.
+## qsub in interactive mode
+
+The PBS command `qsub` can be used to start an interactive session allocated a specified number of IPUs. The interactive session will not inherit tle launching environment. Normal interactive shell startup will occur, e.g. .bashrc will be run for bash users.
 
 Example:
 
 ```console
-srun --ipus=1 python mnist_poptorch.py
-
+qsub -q workq -lwalltime=01:00:00 -lselect=1:ncpus=1+1:nipus=1 -IV
 ```
 
-## SBatch
+## qsub in batch mode
 
-Alternatively, these jobs can be submitted to the Slurm workload manager through a batch script by using the `sbatch` command. To do this, create a bash script (submit-mnist-poptorch-job.sh here as an example) with the commands that you want to execute.
+Alternatively, the PBS command `qsub` can be used to run scripts in batch mode, allocated a specified number of IPUs. Non-interactive shell startup will occur, e.g. .bashrc will be run for bash users, but in non-interactive mode, .bashrc typically exits before setting any user variables.
+
+To do this, create a bash script (submit-mnist-poptorch-job.sh here as an example) with the commands that you want to execute.
 
 ```bash
 #!/bin/sh
@@ -28,40 +30,41 @@ Alternatively, these jobs can be submitted to the Slurm workload manager through
 python mnist_poptorch.py
 ```
 
-Then pass the bash script as an input to the `sbatch` command as shown below, requesting the number of IPUs required:
+Then pass the bash script as an input to the `qsub` command as shown below, requesting the number of IPUs required:
 
 ```console
-sbatch --ipus=1 --output=mnist-poptorch-output.log submit-mnist-poptorch-job.sh
+qsub -q workq -lwalltime=01:00:00 -lselect=1:ncpus=1+1:nipus=1 submit-mnist-poptorch-job.sh
 ```
 
 <!--- See [DataParallel](DataParallel.md) for additional information. --->
 
-## SQueue
+## qstat
 
-The `squeue` command provides information about jobs located in the Slurm scheduling queue.
+The `qstat` command provides information about jobs located in the (default) PBS scheduling queue.
 
 ```console
-$ squeue
+$ qstat -w
              JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
               2572       p64 Graphcor username  R       1:12      1 gc-poplar-02
 ```
 
-## SInfo
+## SInfo ??? TODO
 
-SInfo is used to view partition and node information for a system running Slurm.
+TODO SInfo is used to view partition and node information for a system running Slurm.
 
 ```console
-$ sinfo
+$ sinfo ? Is there any such thing for PBS? 
 PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
 p64*         up   infinite      3   idle gc-poplar-[02-04]
 ```
 
 For more information, see [SInfo](https://slurm.schedmd.com/sinfo.html).
 
-## SCancel
+## qdel
 
-SCancel is used to signal or cancel jobs, job arrays, or job steps.
+The qdel command deletes jobs in the order given.<br>
+Get the job id using qstat -w
 
 ```bash
-scancel job_id
+qdel job_id
 ```
