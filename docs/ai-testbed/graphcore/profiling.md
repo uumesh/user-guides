@@ -1,12 +1,10 @@
-# Profiling
-
-This is an adaptation of [Capturing IPU Reports](https://docs.graphcore.ai/projects/graph-analyser-userguide/en/latest/user-guide.html#capturing-ipu-reports).
+# Profiling with PopVision
 
 ## Reports
 
 ### Capturing IPU Reports
 
-See [Capturing IPU Reports](https://docs.graphcore.ai/projects/graph-analyser-userguide/en/latest/user-guide.html#capturing-ipu-reports) for more information.
+See [Capturing IPU Reports](https://docs.graphcore.ai/projects/graph-analyser-userguide/en/latest/capturing-ipu-reports.html) for more information.
 
 This section describes how to generate the files that the Graph Analyser can analyze. The Graph Analyser uses report files generated during compilation and execution by the Poplar SDK.
 
